@@ -1,3 +1,4 @@
+import unittest
 from typing import List
 
 
@@ -9,8 +10,7 @@ def reverse(nums, start, end):
 
 class Solution:
     def search(self, nums: List[int], target: int) -> int:
-        """
-        Binary search for sorted integer array
+        """Binary search for sorted integer array
         :param nums: list of integers
         :param target: integer to find
         :return: id at which integer occurs, otherwise -1
@@ -36,9 +36,9 @@ class Solution:
             mid = (start + end) // 2
 
     def firstBadVersion(self, n, bad):
-        """
-        :type n: int
-        :rtype: int
+        """Find first bad version of API, all versions bad after first failure
+        :param n: length of array
+        :param bad: location of first failure (API in problem)
         """
         start = 0
         end = n
@@ -55,6 +55,11 @@ class Solution:
         return start
 
     def searchInsert(self, nums: List[int], target: int) -> int:
+        """Binary search for target integer or insertion point in sorted array
+        :param nums: array of sorted integers
+        :param target: integer to find
+        :return: index where integer lies or index where integer would lie if inserted into array
+        """
         start = 0
         end = len(nums)
 
@@ -89,14 +94,15 @@ class Solution:
         # TODO: UNDERSTAND
         if k is None or k <= 0:
             return
-        k, end = k % len(nums), len(nums) - 1
-        reverse(nums, 0, end - k)
-        reverse(nums, end - k + 1, end)
+        k, end = k % len(nums), len(nums)-1
+        reverse(nums, 0, end-k)
+        reverse(nums, end-k+1, end)
         reverse(nums, 0, end)
 
     def moveZeroes(self, nums: List[int]) -> None:
-        """
-        Do not return anything, modify nums in-place instead.
+        """Move zeroes in array to end
+        :param nums: array of integers
+        :return: Do not return anything, modify nums in-place instead.
         """
         offset = 1
         i = 0
@@ -109,13 +115,16 @@ class Solution:
             else:
                 i += 1
 
-        return nums
-
     def twoSum2(self, numbers: List[int], target: int) -> List[int]:
-
+        """Find two numbers that add up to target number, input guarantees exactly one solution
+        :param numbers: array of non decreasing integers
+        :param target: target integer
+        :return: list of two indices whose values add to target, in increasing order, plus one
+        """
         for i in range(len(numbers)):
 
             want = target - numbers[i]
+            # Cheating a bit since problem specifies values < abs(1000)
             numbers[i] = 10000
             if want in numbers:
 
@@ -126,13 +135,80 @@ class Solution:
             numbers[i] = target - want
 
 
+class TestAlgorithms(unittest.TestCase):
+
+    def setUp(self):
+        self.solution = Solution()
+
+    def test_search(self):
+
+        data = [([-1, 0, 3, 5, 9, 12], 9, 4),
+                ([-1, 0, 3, 5, 9, 12], 2, -1)]
+
+        i = 0
+        for nums, target, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.search(nums, target), out)
+            i += 1
+
+    def test_firstBadVersion(self):
+
+        data = [(5, 4, 4),
+                (1, 1, 1)]
+
+        i = 0
+        for n, bad, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.firstBadVersion(n, bad), out)
+            i += 1
+
+    def test_searchInsert(self):
+
+        data = [([1, 3, 5, 6], 5, 2),
+                ([1, 3, 5, 6], 2, 1),
+                ([1, 3, 5, 6], 0, 0),
+                ([1], 0, 0)]
+        i = 0
+        for nums, target, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.searchInsert(nums, target), out)
+            i += 1
+
+    def test_rotate(self):
+        pass
+
+    def test_moveZeroes(self):
+
+        data = [([0, 1, 0, 3, 12], [1, 3, 12, 0, 0]),
+                ([0], [0])]
+
+        i = 0
+        for nums, out in data:
+            with self.subTest(i=i):
+                # Run function first as operation is in-place, not returned
+                self.solution.moveZeroes(nums)
+                self.assertEqual(nums, out)
+            i += 1
+
+    def test_twoSum2(self):
+
+        data = [([2, 7, 11, 15], 9, [1, 2]),
+                ([2, 3, 4], 6, [1, 3]),
+                ([-1, 0], -1, [1, 2])]
+
+        i = 0
+        for nums, target, out in data:
+            with self.subTest(i=i):
+                # Run function first as operation is in-place, not returned
+                self.assertEqual(self.solution.twoSum2(nums, target), out)
+            i += 1
+
+
+def main():
+
+    unittest.main()
+
+
 if __name__ == "__main__":
 
-    a = Solution()
-    # print(a.search([-1, 0, 3, 5, 9, 12], 2))
-    # print(a.firstBadVersion(5, 4))
-    # print(a.searchInsert([1, 3, 5, 6], 5))
-    # print(a.sortedSquares([-4, -1, 0, 5, 10]))
-    # print(a.rotate([1, 2, 3, 4, 5, 6], 2))
-    # print(a.moveZeroes([0, 0, 1]))
-    print(a.twoSum2([2, 7, 11, 15], 9))
+    main()
