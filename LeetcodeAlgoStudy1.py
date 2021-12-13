@@ -3,6 +3,12 @@ from typing import List
 
 
 def reverse(nums, start, end):
+    """Reverse list in place
+    :param nums: original list
+    :param start: index to begin reverse
+    :param end: index to end reverse
+    :return: reversed list
+    """
     while start < end:
         nums[start], nums[end] = nums[end], nums[start]
         start, end = start + 1, end - 1
@@ -77,26 +83,37 @@ class Solution:
         return start
 
     def sortedSquares(self, nums: List[int]) -> List[int]:
-        # TODO: UNDERSTAND
+        """Sort list of squared numbers
+        :param nums: list on integers to be squared and sorted
+        :return: squared and sorted list
+        """
+        # Pre-allocating list
         answer = [0] * len(nums)
-        l, r = 0, len(nums) - 1
-        while l <= r:
-            left, right = abs(nums[l]), abs(nums[r])
+        start, end = 0, len(nums) - 1
+
+        while start <= end:
+            left, right = abs(nums[start]), abs(nums[end])
             if left > right:
-                answer[r - l] = left * left
-                l += 1
+                answer[end - start] = left * left
+                start += 1
             else:
-                answer[r - l] = right * right
-                r -= 1
+                answer[end - start] = right * right
+                end -= 1
         return answer
 
-    def rotate(self, nums, k):
-        # TODO: UNDERSTAND
+    def rotate(self, nums: List[int], k: int) -> None:
+        """Rotate array in place
+        :param nums: original integer array
+        :param k: integer to rotate array by
+        :return: nothing, rotation done in place
+        """
         if k is None or k <= 0:
             return
-        k, end = k % len(nums), len(nums)-1
-        reverse(nums, 0, end-k)
-        reverse(nums, end-k+1, end)
+        # If k > n, reduce k
+        k = k % len(nums)
+        end = len(nums) - 1
+        reverse(nums, 0, end - k)
+        reverse(nums, end - k + 1, end)
         reverse(nums, 0, end)
 
     def moveZeroes(self, nums: List[int]) -> None:
@@ -134,6 +151,18 @@ class Solution:
 
             numbers[i] = target - want
 
+    def reverseWords(self, s: str) -> str:
+        """Reverse words in a string, preserving order and whitespace
+        :param s: input string
+        :return: reverse word string
+        """
+        words = s.split(' ')
+        for i, word in enumerate(words):
+
+            words[i] = word[::-1]
+
+        return ' '.join(words)
+
 
 class TestAlgorithms(unittest.TestCase):
 
@@ -162,6 +191,17 @@ class TestAlgorithms(unittest.TestCase):
                 self.assertEqual(self.solution.firstBadVersion(n, bad), out)
             i += 1
 
+    def test_sortedSquares(self):
+
+        data = [([-4, -1, 0, 3, 10], [0, 1, 9, 16, 100]),
+                ([-7, -3, 2, 3, 11], [4, 9, 9, 49, 121])]
+
+        i = 0
+        for nums, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.sortedSquares(nums), out)
+            i += 1
+
     def test_searchInsert(self):
 
         data = [([1, 3, 5, 6], 5, 2),
@@ -175,7 +215,17 @@ class TestAlgorithms(unittest.TestCase):
             i += 1
 
     def test_rotate(self):
-        pass
+
+        data = [([1, 2, 3, 4, 5, 6, 7], 3, [5, 6, 7, 1, 2, 3, 4]),
+                ([-1, -100, 3, 99], 2, [3, 99, -1, -100])]
+
+        i = 0
+        for nums, k, out in data:
+            with self.subTest(i=i):
+                # Run function first as operation is in-place, not returned
+                self.solution.rotate(nums, k)
+                self.assertEqual(nums, out)
+            i += 1
 
     def test_moveZeroes(self):
 
@@ -199,8 +249,16 @@ class TestAlgorithms(unittest.TestCase):
         i = 0
         for nums, target, out in data:
             with self.subTest(i=i):
-                # Run function first as operation is in-place, not returned
                 self.assertEqual(self.solution.twoSum2(nums, target), out)
+            i += 1
+
+    def test_reverseWords(self):
+
+        data = [("okay let's go", "yako s'tel og")]
+        i = 0
+        for inp, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.reverseWords(inp), out)
             i += 1
 
 
