@@ -138,6 +138,7 @@ class Solution:
         :param target: target integer
         :return: list of two indices whose values add to target, in increasing order, plus one
         """
+        # TODO: faster version using binary search
         for i in range(len(numbers)):
 
             want = target - numbers[i]
@@ -150,18 +151,6 @@ class Solution:
                     return [i+1, j+1]
 
             numbers[i] = target - want
-
-    def reverseWords(self, s: str) -> str:
-        """Reverse words in a string, preserving order and whitespace
-        :param s: input string
-        :return: reverse word string
-        """
-        words = s.split(' ')
-        for i, word in enumerate(words):
-
-            words[i] = word[::-1]
-
-        return ' '.join(words)
 
 
 class TestAlgorithms(unittest.TestCase):
@@ -250,15 +239,6 @@ class TestAlgorithms(unittest.TestCase):
         for nums, target, out in data:
             with self.subTest(i=i):
                 self.assertEqual(self.solution.twoSum2(nums, target), out)
-            i += 1
-
-    def test_reverseWords(self):
-
-        data = [("okay let's go", "yako s'tel og")]
-        i = 0
-        for inp, out in data:
-            with self.subTest(i=i):
-                self.assertEqual(self.solution.reverseWords(inp), out)
             i += 1
 
 
