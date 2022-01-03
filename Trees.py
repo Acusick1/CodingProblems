@@ -99,25 +99,29 @@ class Solution:
 
         return res
 
-    def maxDepth(self, root: Optional[Node]) -> int:
+    @staticmethod
+    def max_depth(root: Optional[Node]) -> int:
         """Breadth first search to find maximum depth of binary tree. From root node, children are added to a new list
         that will be searched in during next loop iteration. Continues down through every level of tree"""
         depth = 0
-        children = []
         level = [root] if root else []
 
         while level:
+            children = []
             depth += 1
             for el in level:
                 if el.left:
                     children.append(el.left)
-                elif el.right:
+
+                if el.right:
                     children.append(el.right)
 
             level = children
 
         return depth
 
+        def invert_tree(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
+            pass
 
 def example_tree():
 
@@ -142,30 +146,40 @@ class TestTress(unittest.TestCase):
         self.solution = Solution()
 
     def test_traverse_inorder(self):
-        root = Node.from_list([3, 9, 20, None, None, 15, 7])
-        data = [(root, [9, 3, 15, 20, 7])]
+        data = [([3, 9, 20, None, None, 15, 7], [9, 3, 15, 20, 7])]
         i = 0
         for inp, out in data:
+            root = Node.from_list(inp)
             with self.subTest(i=i):
-                self.assertEqual(self.solution.traverse_inorder(inp), out)
+                self.assertEqual(self.solution.traverse_inorder(root), out)
             i += 1
 
     def test_traverse_preorder(self):
-        root = Node.from_list([3, 9, 20, None, None, 15, 7])
-        data = [(root, [3, 9, 15, 20, 7])]
+        data = [([3, 9, 20, None, None, 15, 7], [3, 9, 15, 20, 7])]
         i = 0
         for inp, out in data:
+            root = Node.from_list(inp)
             with self.subTest(i=i):
-                self.assertEqual(self.solution.traverse_preorder(inp), out)
+                self.assertEqual(self.solution.traverse_preorder(root), out)
             i += 1
 
     def test_traverse_postorder(self):
-        root = Node.from_list([3, 9, 20, None, None, 15, 7])
-        data = [(root, [9, 15, 20, 7, 3])]
+        data = [([3, 9, 20, None, None, 15, 7], [9, 15, 20, 7, 3])]
         i = 0
         for inp, out in data:
+            root = Node.from_list(inp)
             with self.subTest(i=i):
-                self.assertEqual(self.solution.traverse_postorder(inp), out)
+                self.assertEqual(self.solution.traverse_postorder(root), out)
+            i += 1
+
+    def test_max_depth(self):
+        data = [([3, 9, 20, None, None, 15, 7], 3),
+                ([1, None, 2], 2)]
+        i = 0
+        for inp, out in data:
+            root = Node.from_list(inp)
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.max_depth(root), out)
             i += 1
 
 
