@@ -222,6 +222,32 @@ class Solution:
         else:
             return True
 
+    def max_sum_path_main(self, root):
+        """Runner function for finding maximum path sum of a given tree.
+        Necessary to keep track of maximum single node sums, by setting static variable within recursive
+        max_sum_path function"""
+        max_sum_path.solo_path = -float('inf')
+
+        max_path = max_sum_path(root)
+
+        return max(max_path, max_sum_path.solo_path)
+
+
+def max_sum_path(root):
+    """Recursive function for finding the maximum path sum of a given tree, which can start and end at any node"""
+    # Base case
+    if root is None:
+        return 0
+
+    left = max_sum_path(root.left)
+    right = max_sum_path(root.right)
+
+    max_path = max(max(left, right) + root.val, root.val)
+    max_solo = max(max_path, root.val + left + right)
+    max_sum_path.solo_path = max(max_sum_path.solo_path, max_solo)
+
+    return max_path
+
 
 def example_tree():
     vals = [3, 9, 20, 15, 7]
@@ -330,6 +356,19 @@ class TestTress(unittest.TestCase):
             t2 = Node.from_list(t2)
             with self.subTest(i=i):
                 self.assertEqual(self.solution.is_same_tree_2(t1, t2), out)
+            i += 1
+
+    def test_max_sum_path_main(self):
+
+        data =[([1, 2, 3], 6),
+               ([-10, 9, 20, None, None, 15, 7], 42),
+               ([-1, -2, 10, -6, None, -3, -6], 10)]
+
+        i = 0
+        for inp, out in data:
+            root = Node.from_list(inp)
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.max_sum_path_main(root), out)
             i += 1
 
 
