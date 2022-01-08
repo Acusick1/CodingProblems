@@ -1,5 +1,7 @@
+import unittest
 import numpy as np
 from typing import List
+from functools import lru_cache
 
 
 def transpose(matrix):
@@ -165,6 +167,64 @@ class Solution:
                 break
 
         return False
+
+    def climb_stairs(self, n: int) -> int:
+
+        if n == 1:
+
+            return 1
+
+        elif n == 2:
+
+            return 2
+
+        else:
+
+            return self.climb_stairs(n - 1) + self.climb_stairs(n - 2)
+
+    def climb_stairs2(self, n):
+        if n == 1:
+            return 1
+
+        res = [0 for i in range(n)]
+        res[0], res[1] = 1, 2
+
+        for i in range(2, n):
+            res[i] = res[i - 1] + res[i - 2]
+
+            # Better solution (O(n) space)
+            # tmp = b
+            # b = a + b
+            # a = tmp
+
+        return res[-1]
+
+
+class TestDynamicProg(unittest.TestCase):
+
+    def setUp(self) -> None:
+
+        self.solution = Solution()
+
+    def test_climb_stairs(self):
+
+        data = [(2, 2),
+                (3, 3)]
+        i = 0
+        for inp, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.climb_stairs(inp), out)
+            i += 1
+
+    def test_climb_stairs2(self):
+
+        data = [(2, 2),
+                (3, 3)]
+        i = 0
+        for inp, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.climb_stairs2(inp), out)
+            i += 1
 
 
 if __name__ == "__main__":
