@@ -16,7 +16,7 @@ class Node:
         already been reached.
         Example input: [1, None, 3, None, None, 4, 5]
         """
-
+        # TODO: pop from beginning is slow
         if vals:
             root = Node(vals.pop(0))
             level = [root]
@@ -163,6 +163,65 @@ class Solution:
 
         return root
 
+    @staticmethod
+    def invert_tree_2(root: Optional[Node]) -> Optional[Node]:
+        """Invert binary tree; swap left and right values, retain and return root node"""
+        stack = [root] if root else []
+
+        while stack:
+            node = stack.pop(0)
+            if node:
+                # If node is not None, flip it's left and right nodes, then add these nodes to the stack
+                node.left, node.right = node.right, node.left
+                stack += node.left, node.right
+
+        return root
+
+    def is_same_tree(self, p: Optional[Node], q: Optional[Node]) -> bool:
+        """Check if two input trees are the same using BFS"""
+        # Note: Became hacky trying to satisfy test cases, recursion method in subsequent function is an improvement
+
+        if type(p) != type(q):
+            return False
+
+        tree1 = [p] if p else []
+        tree2 = [q] if q else []
+
+        while tree1 and tree2:
+
+            children1 = []
+            children2 = []
+            for node1, node2 in zip(tree1, tree2):
+
+                if type(node1) != type(node2) or node1.val != node2.val:
+                    return False
+
+                if node1.left or node2.left:
+                    children1.append(node1.left)
+                    children2.append(node2.left)
+
+                if node1.right or node2.right:
+                    children1.append(node1.right)
+                    children2.append(node2.right)
+
+            tree1 = children1
+            tree2 = children2
+
+        return True
+
+    def is_same_tree_2(self, p: Optional[Node], q: Optional[Node]) -> bool:
+        """Check if two input trees are the same using recursive DFS"""
+        if p or q:
+            if type(p) == type(q) and p.val == q.val:
+
+                left_equal = self.is_same_tree_2(p.left, q.left)
+                right_equal = self.is_same_tree_2(p.right, q.right)
+                return left_equal and right_equal
+            else:
+                return False
+        else:
+            return True
+
 
 def example_tree():
     vals = [3, 9, 20, 15, 7]
@@ -234,7 +293,8 @@ class TestTress(unittest.TestCase):
     def test_invert_tree(self):
         data = [([4, 2, 7, 1, 3, 6, 9], [4, 7, 2, 9, 6, 3, 1]),
                 ([2, 1, 3], [2, 3, 1]),
-                ([], [])]
+                ([], []),
+                ([1, 2, None], [1, None, 2])]
         i = 0
         for inp, out in data:
             root = Node.from_list(inp)
@@ -242,6 +302,34 @@ class TestTress(unittest.TestCase):
             res = res.to_list() if res else []
             with self.subTest(i=i):
                 self.assertEqual(res, out)
+            i += 1
+
+    def test_is_same_tree(self):
+
+        data = [([1, 2, 3], [1, 2, 3], True),
+                ([1, 2, None], [1, None, 2], False),
+                ([1, 2, 1], [1, 1, 2], False),
+                ([], [0], False)]
+        i = 0
+        for t1, t2, out in data:
+            t1 = Node.from_list(t1)
+            t2 = Node.from_list(t2)
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.is_same_tree(t1, t2), out)
+            i += 1
+
+    def test_is_same_tree_2(self):
+
+        data = [([1, 2, 3], [1, 2, 3], True),
+                ([1, 2, None], [1, None, 2], False),
+                ([1, 2, 1], [1, 1, 2], False),
+                ([], [0], False)]
+        i = 0
+        for t1, t2, out in data:
+            t1 = Node.from_list(t1)
+            t2 = Node.from_list(t2)
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.is_same_tree_2(t1, t2), out)
             i += 1
 
 
