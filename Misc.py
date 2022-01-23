@@ -5,6 +5,23 @@ from typing import List
 class Solution:
 
     @staticmethod
+    def max_profit(prices: List[int]) -> int:
+
+        bought_at = float('inf')
+        profit = 0
+
+        for price in prices:
+
+            if price < bought_at:
+                bought_at = price
+
+            if price > bought_at:
+                profit += price - bought_at
+                bought_at = price
+
+        return profit
+
+    @staticmethod
     def is_prime(num: int) -> bool:
         """Define whether given integer is a prime number"""
         # If number is even, not a prime number (exception is 2, which is a prime number)
@@ -22,6 +39,18 @@ class Solution:
                 return False
 
         return True
+
+    @staticmethod
+    def find_median(arr) -> float:
+
+        mid = len(arr) // 2
+        if len(arr) % 2:
+            median = arr[mid]
+        elif len(arr) > 0:
+            median = (arr[mid - 1] + arr[mid]) / 2
+        else:
+            median = []
+        return median
 
     @staticmethod
     def iterative_binary_search(arr, num):
@@ -104,6 +133,18 @@ class TestMisc(unittest.TestCase):
 
         self.solution = Solution()
 
+    def test_max_profit(self):
+
+        data = [
+            ([2, 1, 2, 0, 1], 2)]
+
+        i = 0
+        for inp, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.max_profit(inp), out)
+
+            i += 1
+
     def test_is_prime(self):
 
         data = [(10, False),
@@ -153,12 +194,23 @@ class TestMisc(unittest.TestCase):
                 ([1, 2, 3], 5, [1, 2, 3, 5]),
                 ([1, 2, 4], 3, [1, 2, 3, 4]),
                 ([1], 0, [0, 1]),
-                ([], 0, [0])]
+                ([], 0, [0]),
+                ([2, 5, 6, 6, 10], 0, [0, 2, 5, 6, 6, 10])]
 
         i = 0
         for arr, num, out in data:
             with self.subTest(i=i):
                 self.assertEqual(self.solution.binary_insert(arr, num), out)
+            i += 1
+
+    def test_find_median(self):
+
+        data = [([0, 2, 5, 6, 6, 10], 5.5)]
+
+        i = 0
+        for inp, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.find_median(inp), out)
             i += 1
 
 
