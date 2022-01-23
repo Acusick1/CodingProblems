@@ -37,6 +37,30 @@ class Solution:
 
         return res
 
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        """Remove minimum number of intervals to give non-overlapping list of intervals
+        :param intervals: list of increasing intervals
+        :return : number of intervals removed
+        Idea is to retain a current interval, see if it compares with the next. If so, one of them must be removed,
+        so pick the one with smallest end to maximise chance that the next interval will not overlap.
+        """
+        curr = []
+        n = 0
+        # Sort intervals by start
+        for i in sorted(intervals, key=lambda x: x[0]):
+
+            # If overlap (start of next < end of previous)
+            if curr and i[0] < curr[1]:
+
+                # Pick interval which has smallest end to retain as current
+                curr = min([curr, i], key=lambda x: x[1])
+                # Increase counter since one must be removed
+                n += 1
+            else:
+                curr = i
+
+        return n
+
 
 class TestSolution(unittest.TestCase):
 
@@ -67,6 +91,28 @@ class TestSolution(unittest.TestCase):
             with self.subTest(i=i):
                 self.assertEqual(self.solution.merge(interval), out)
             i += 1
+
+    def test_eraseOverlapIntervals(self):
+        data = [([[1, 2], [2, 3], [3, 4], [1, 3]], 1),
+                ([[1, 2], [1, 2], [1, 2]], 2),
+                ([[1, 2], [2, 3]], 0),
+                ([[1, 100], [20, 40], [41, 50], [51, 99]], 1),
+                ([[-3035, 30075], [1937, 6906], [11834, 20971], [44578, 45600], [28565, 37578], [19621, 34415],
+                  [32985, 36313], [-8144, 1080], [-15279, 21851], [-27140, -14703], [-12098, 16264], [-36057, -16287],
+                  [47939, 48626], [-15129, -5773], [10508, 46685], [-35323, -26257]], 9)]
+
+        i = 0
+        for intervals, out in data:
+            with self.subTest(i=i):
+                self.assertEqual(self.solution.eraseOverlapIntervals(intervals), out)
+            i += 1
+
+
+def overlap(i1: List[int], i2: List[int]) -> bool:
+    """Check if two intervals overlap
+    Note: Simple case assuming i1 and i2 are pre-sorted by start value. Here as a sanity check.
+    """
+    return i2[0] < i1[1]
 
 
 if __name__ == "__main__":
