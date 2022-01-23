@@ -6,15 +6,22 @@ class Solution:
 
     @staticmethod
     def max_profit(prices: List[int]) -> int:
-
+        """Find maximum profit that can be gained given a list of numbers representing prices over time
+        :param prices: list of prices with increasing time
+        Note: Assuming this problem is the maximum one could earn i.e. we can go back in time and re-write a buy if
+        price drops in the future.
+        Set bought price to maximum, re-write if current value is lower, sell if current value is higher and add to
+        profit.
+        """
         bought_at = float('inf')
         profit = 0
 
         for price in prices:
-
+            # re-write bought price with lower price
             if price < bought_at:
                 bought_at = price
 
+            # sell and re-buy, can always re-write if next is lower
             if price > bought_at:
                 profit += price - bought_at
                 bought_at = price
@@ -41,14 +48,21 @@ class Solution:
         return True
 
     @staticmethod
-    def find_median(arr) -> float:
-
+    def find_median(arr: List[int]) -> float:
+        """Find median of an array
+        :param arr: list of integers
+        :return: median value
+        """
+        # Find floored middle value
         mid = len(arr) // 2
         if len(arr) % 2:
+            # If length is odd, median is just middle value
             median = arr[mid]
         elif len(arr) > 0:
+            # If length is even, must take average of two middle values
             median = (arr[mid - 1] + arr[mid]) / 2
         else:
+            # Empty input case
             median = []
         return median
 
@@ -59,7 +73,6 @@ class Solution:
         :param num: number to be searched for within arr
         :returns: id where integer lies in array, or -1 if it is not present
         """
-
         start = 0
         end = len(arr) - 1
         while start <= end:
@@ -82,7 +95,7 @@ class Solution:
         :returns: id where integer lies in array, or -1 if it is not present
         Note: Initially thought this could be done by inputting smaller arrays on each recursive call, therefore not
         requiring start and end inputs. However, this would require proper tracking of ids, since the id 2 (for example)
-        within a smaller right hand side array in the call stack will not map correctly to the overall array"""
+        within a smaller right-hand side array in the call stack will not map correctly to the overall array"""
         if end is None:
             end = len(arr) - 1
 
@@ -105,7 +118,6 @@ class Solution:
         :param arr: sorted list of integers
         :param num: integer to insert
         """
-
         # Edge cases where arr in empty or num is greater than final number
         if not arr or num > arr[-1]:
             arr.append(num)

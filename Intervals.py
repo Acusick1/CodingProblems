@@ -3,26 +3,31 @@ from typing import List
 
 
 class Solution:
-    def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
-        """Inset new interval within list of intervals, merge if needed"""
+    @staticmethod
+    def insert(intervals: List[List[int]], new_interval: List[int]) -> List[List[int]]:
+        """Inset new interval within list of intervals, merge if needed
+        :param intervals: list of current intervals
+        :param new_interval: interval to be merged
+        :return: updated intervals with new_interval merged"""
         left, i = [], -1
         for i, (x, y) in enumerate(intervals):
-            if y < newInterval[0]:
+            if y < new_interval[0]:
                 # Explicitly less than new interval
                 left.append([x, y])
-            elif newInterval[1] < x:
+            elif new_interval[1] < x:
                 # New interval explicitly less than current
-                # Therefore decrement i as right hand side must contain current
+                # Therefore decrement i as right-hand side must contain current
                 i -= 1
                 break
             else:
                 # Intervals overlap, pick min and max
-                newInterval[0] = min(newInterval[0], x)
-                newInterval[1] = max(newInterval[1], y)
+                new_interval[0] = min(new_interval[0], x)
+                new_interval[1] = max(new_interval[1], y)
 
-        return left + [newInterval] + intervals[i + 1:]
+        return left + [new_interval] + intervals[i + 1:]
 
-    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+    @staticmethod
+    def merge(intervals: List[List[int]]) -> List[List[int]]:
         """Merge list of intervals to ensure no overlap"""
         res = []
         # Sorting intervals by starting value
@@ -37,12 +42,13 @@ class Solution:
 
         return res
 
-    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+    @staticmethod
+    def erase_overlap_intervals(intervals: List[List[int]]) -> int:
         """Remove minimum number of intervals to give non-overlapping list of intervals
         :param intervals: list of increasing intervals
         :return : number of intervals removed
         Idea is to retain a current interval, see if it compares with the next. If so, one of them must be removed,
-        so pick the one with smallest end to maximise chance that the next interval will not overlap.
+        so pick the one with the smallest end to maximise chance that the next interval will not overlap.
         """
         curr = []
         n = 0
@@ -52,7 +58,7 @@ class Solution:
             # If overlap (start of next < end of previous)
             if curr and i[0] < curr[1]:
 
-                # Pick interval which has smallest end to retain as current
+                # Pick interval which has the smallest end to retain as current
                 curr = min([curr, i], key=lambda x: x[1])
                 # Increase counter since one must be removed
                 n += 1
@@ -92,7 +98,7 @@ class TestSolution(unittest.TestCase):
                 self.assertEqual(self.solution.merge(interval), out)
             i += 1
 
-    def test_eraseOverlapIntervals(self):
+    def test_erase_overlap_intervals(self):
         data = [([[1, 2], [2, 3], [3, 4], [1, 3]], 1),
                 ([[1, 2], [1, 2], [1, 2]], 2),
                 ([[1, 2], [2, 3]], 0),
@@ -104,7 +110,7 @@ class TestSolution(unittest.TestCase):
         i = 0
         for intervals, out in data:
             with self.subTest(i=i):
-                self.assertEqual(self.solution.eraseOverlapIntervals(intervals), out)
+                self.assertEqual(self.solution.erase_overlap_intervals(intervals), out)
             i += 1
 
 
